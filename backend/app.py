@@ -8,6 +8,39 @@ import json
 app = Flask(__name__)
 CORS(app)
 
+import datetime
+from graphene.types import Scalar
+from graphql.language import ast
+
+class DateT(Scalar):
+    '''DateTime Scalar Description'''
+
+    @staticmethod
+    def serialize(dt):
+        return dt
+
+    @staticmethod
+    def parse_literal(node):
+        if isinstance(node, ast.StringValue):
+            return datetime.datetime.strptime(
+                node.value, "%Y-%m-%dT%H:%M:%S.%f")
+
+    @staticmethod
+    def parse_value(value):
+        return datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+
+class Hist300(graphene.ObjectType):
+    o = graphene.String()
+    h = graphene.String()
+    l = graphene.String()
+    c = graphene.Float()
+    t = graphene.Field(DateT)
+    tm = graphene.Field(DateT)
+    close_list = graphene.List(graphene.Int)
+
+    def resolve_close_list(self, info):
+        return c
+
 
 class Symbol(graphene.ObjectType):
     id = graphene.ID()
@@ -17,10 +50,16 @@ class Symbol(graphene.ObjectType):
 
 class Query(graphene.ObjectType):
     symbolsList = graphene.List(Symbol)
+    getHist300 = graphene.List(Hist300)
 
     def resolve_symbolsList(self, info):
         r = get_data.fcsapi()
         return r['response']
+
+    def resolve_getHist300(self, info):
+        r = get_data.hist_300()
+        return r['response']
+
 
 schema = graphene.Schema(query=Query)
 
