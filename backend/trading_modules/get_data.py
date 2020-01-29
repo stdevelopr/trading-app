@@ -1,5 +1,6 @@
 import requests
 import json
+from . config import API_KEY
 
 
 
@@ -19,11 +20,11 @@ def fcsapi():
     return resp
 
 
-def hist_300():
+def hist_300(symbol):
     payload = {
         # "chart":"1",
-        "symbol":"GBP/USD",
-        "period":"1h",
+        "symbol":symbol,
+        "period":"1d",
         "access_key": API_KEY
     }
     r = requests.get("https://fcsapi.com/api/forex/history", params=payload)

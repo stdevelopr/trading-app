@@ -10,7 +10,7 @@ const CHART_DATA = gql`
   {
     chart_data @client {
       c
-      tm
+      t
     }
   }
 `;
@@ -22,6 +22,9 @@ const Chart = () => {
 
   useEffect(() => {
     var svg = d3.select("svg");
+
+    //clear the last plot
+    d3.selectAll("svg > *").remove();
 
     //chart plot area
     const padding = { top: 20, right: 20, bottom: 20, left: 40 };
@@ -37,8 +40,8 @@ const Chart = () => {
       .range([chartArea.height, 0]);
 
     const xScale = d3
-      .scaleLinear()
-      .domain([d3.min(chart_data, v => v.tm), d3.max(chart_data, v => v.tm)])
+      .scaleTime()
+      .domain([d3.min(chart_data, v => v.t), d3.max(chart_data, v => v.t)])
       .range([0, chartArea.width]);
 
     // axis
@@ -55,9 +58,25 @@ const Chart = () => {
       .attr("transform", `translate(${padding.left}, ${padding.top})`)
       .call(d3.axisLeft(yScale));
 
-    // plotting
-    const xValue = d => d.tm;
+    // transform functions
+    const xValue = d => d.t;
     const yValue = d => d.c;
+
+    //line generator
+    const lineGenerator = d3
+      .line()
+      .x(d => xScale(xValue(d)))
+      .y(d => yScale(yValue(d)));
+
+    const line = svg
+      .append("g")
+      .attr("transform", `translate(${padding.left}, ${padding.top})`)
+      .append("path")
+      .attr("stroke", "black")
+      .attr("fill", "none")
+      .attr("d", lineGenerator(chart_data));
+
+    // plotting
     const plot = svg
       .append("g")
       .attr("transform", `translate(${padding.left}, ${padding.top})`)
@@ -68,11 +87,11 @@ const Chart = () => {
       .attr("cx", d => xScale(xValue(d)))
       .attr("cy", d => yScale(yValue(d)))
       .style("fill", "red")
-      .attr("r", 3);
+      .attr("r", 2);
   });
   return (
     <div>
-      <svg width="1000" height="500"></svg>
+      <svg width="1400" height="500"></svg>
     </div>
   );
 };

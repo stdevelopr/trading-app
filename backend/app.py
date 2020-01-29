@@ -36,11 +36,6 @@ class Hist300(graphene.ObjectType):
     c = graphene.Float()
     t = graphene.Field(DateT)
     tm = graphene.Field(DateT)
-    close_list = graphene.List(graphene.Int)
-
-    def resolve_close_list(self, info):
-        return c
-
 
 class Symbol(graphene.ObjectType):
     id = graphene.ID()
@@ -50,14 +45,14 @@ class Symbol(graphene.ObjectType):
 
 class Query(graphene.ObjectType):
     symbolsList = graphene.List(Symbol)
-    getHist300 = graphene.List(Hist300)
+    getHist300 = graphene.List(Hist300, symbol=graphene.String())
 
     def resolve_symbolsList(self, info):
         r = get_data.fcsapi()
         return r['response']
 
-    def resolve_getHist300(self, info):
-        r = get_data.hist_300()
+    def resolve_getHist300(self, info, symbol):
+        r = get_data.hist_300(symbol)
         return r['response']
 
 

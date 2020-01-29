@@ -26,10 +26,10 @@ const GET_300 = gql`
 cache.writeData({
   data: {
     chart_data: [
-      { c: 10, tm: 17, __typename: "data_chart" },
-      { c: 30, tm: 20, __typename: "data_chart" },
-      { c: 50, tm: 25, __typename: "data_chart" },
-      { c: 20, tm: 30, __typename: "data_chart" }
+      { c: 10, t: 17, __typename: "data_chart" },
+      { c: 30, t: 20, __typename: "data_chart" },
+      { c: 50, t: 25, __typename: "data_chart" },
+      { c: 20, t: 30, __typename: "data_chart" }
     ]
   }
 });
