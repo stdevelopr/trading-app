@@ -3,9 +3,11 @@ import List from "./DropdownList.jsx";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 import Chart from "./Charting.jsx";
+import Candlestick from "./Candlestick.jsx";
 import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
 import { InMemoryCache } from "apollo-cache-inmemory";
+import { FCSAPI_FOREX_HIST_300_CLOSE } from "../graphql/queries/get_data.graphql";
 
 const cache = new InMemoryCache();
 const Client = new ApolloClient({
@@ -14,38 +16,19 @@ const Client = new ApolloClient({
   resolvers: {}
 });
 
-const GET_300 = gql`
-  {
-    getHist300 {
-      c
-      tm
-    }
-  }
-`;
-
 cache.writeData({
   data: {
-    chart_data: [
-      { c: 10, t: 17, __typename: "data_chart" },
-      { c: 30, t: 20, __typename: "data_chart" },
-      { c: 50, t: 25, __typename: "data_chart" },
-      { c: 20, t: 30, __typename: "data_chart" }
-    ]
+    FCSAPI_FOREX_PAIR: "EUR/USD"
   }
 });
-// chart_data = [
-
-// ];
-
-// Client.query({ query: GET_300 }).then(res => console.log(res));
 
 const App = () => {
-  // const { loading, error, data } = useQuery(GET_300);
   return (
     <ApolloProvider client={Client}>
       <div>
         <List />
         <Chart />
+        <Candlestick />
       </div>
     </ApolloProvider>
   );

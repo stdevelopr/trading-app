@@ -5,15 +5,16 @@ import { useQuery } from "@apollo/react-hooks";
 import { graphql } from "@apollo/react-hoc";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { withApollo } from "@apollo/react-hoc";
+import { FCSAPI_FOREX_HIST_300_OHLC } from "../graphql/queries/get_data.graphql";
 
-const GET_300 = gql`
-  query get300($symbol: String) {
-    getHist300(symbol: $symbol) {
-      c
-      t
-    }
-  }
-`;
+// const GET_300 = gql`
+//   query get300($symbol: String) {
+//     getHist300(symbol: $symbol) {
+//       c
+//       t
+//     }
+//   }
+// `;
 
 const SYMBOLS_LIST = gql`
   {
@@ -33,23 +34,30 @@ const CHART_DATA = gql`
   }
 `;
 
-function List({ client }) {
-  const [symbol, setSymbol] = useState("EUR/USD");
-  console.log("symbol", symbol);
-  const [getData, ob] = useLazyQuery(GET_300, {
-    variables: { symbol: symbol }
-  });
-  console.log("lazy", ob.data);
-  if (ob.data) {
-    console.log("write");
-    client.writeData({ data: { chart_data: ob.data.getHist300 } });
+const GET_PAIR = gql`
+  {
+    FCSAPI_FOREX_PAIR @client
   }
-  const updateSymbol = () => {
-    getData();
+`;
+
+function DropdownList({ client }) {
+  // get the symbol from cache
+  const {
+    data: { FCSAPI_FOREX_PAIR }
+  } = useQuery(GET_PAIR);
+
+  // query the values for the symbol
+  const [getData, ob] = useLazyQuery(FCSAPI_FOREX_HIST_300_OHLC, {
+    variables: { symbol: FCSAPI_FOREX_PAIR }
+  });
+
+  const updateSymbol = symbol => {
+    client.writeData({
+      data: { FCSAPI_FOREX_PAIR: symbol }
+    });
   };
-  console.log(ob.loading);
+
   const { loading, error, data } = useQuery(SYMBOLS_LIST);
-  console.log("initial_data", data);
   if (loading)
     return (
       <select>
@@ -61,8 +69,7 @@ function List({ client }) {
     <div>
       <select
         onChange={e => {
-          setSymbol(e.target.value);
-          updateSymbol();
+          updateSymbol(e.target.value);
         }}
       >
         {data.symbolsList.map(symbol => (
@@ -73,4 +80,4 @@ function List({ client }) {
   );
 }
 
-export default withApollo(List);
+export default withApollo(DropdownList);

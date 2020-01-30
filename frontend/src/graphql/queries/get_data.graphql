@@ -1,0 +1,24 @@
+import { gql } from "apollo-boost";
+
+
+export const FCSAPI_FOREX_HIST_300_OHLC = gql`
+  query get300($symbol: String) {
+    getHist300(symbol: $symbol) {
+      o
+      h
+      l
+      c
+      t
+    }
+  }
+`;
+
+
+export const FCSAPI_FOREX_HIST_300_CLOSE = gql`
+  query get300($symbol: String) {
+    getHist300(symbol: $symbol) {
+      c
+      t
+    }
+  }
+`;
