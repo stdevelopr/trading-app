@@ -16,9 +16,41 @@ export const FCSAPI_FOREX_HIST_300_OHLC = gql`
 
 export const FCSAPI_FOREX_HIST_300_CLOSE = gql`
   query get300($symbol: String) {
-    getHist300(symbol: $symbol) {
+    getHist300(symbol: $symbol) @client{
       c
       t
     }
+  }
+`;
+
+export const FCSAPI_FOREX_HIST_300_JUSTCLOSE = gql`
+  query get300($symbol: String) {
+    getHist300(symbol: $symbol) @client{
+      c
+      t
+    }
+  }
+`;
+
+export const SMA = gql`
+  query SMA($input: [Float]) {
+    sma(input: $input) {
+      output
+    }
+  }
+`;
+
+export const SYMBOLS_LIST = gql`
+  {
+    symbolsList {
+      name
+      symbol
+    }
+  }
+`;
+
+export const GET_PAIR = gql`
+  {
+    FCSAPI_FOREX_PAIR @client
   }
 `;

@@ -5,40 +5,11 @@ import { useQuery } from "@apollo/react-hooks";
 import { graphql } from "@apollo/react-hoc";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { withApollo } from "@apollo/react-hoc";
-import { FCSAPI_FOREX_HIST_300_OHLC } from "../graphql/queries/get_data.graphql";
-
-// const GET_300 = gql`
-//   query get300($symbol: String) {
-//     getHist300(symbol: $symbol) {
-//       c
-//       t
-//     }
-//   }
-// `;
-
-const SYMBOLS_LIST = gql`
-  {
-    symbolsList {
-      name
-      symbol
-    }
-  }
-`;
-
-const CHART_DATA = gql`
-  {
-    chart_data @client {
-      c
-      tm
-    }
-  }
-`;
-
-const GET_PAIR = gql`
-  {
-    FCSAPI_FOREX_PAIR @client
-  }
-`;
+import {
+  FCSAPI_FOREX_HIST_300_OHLC,
+  SYMBOLS_LIST,
+  GET_PAIR
+} from "../graphql/queries/get_data.graphql";
 
 function DropdownList({ client }) {
   // get the symbol from cache

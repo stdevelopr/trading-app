@@ -1,9 +1,10 @@
 from flask import Flask, render_template
-from trading_modules import get_data
+from trading_modules import get_data, indicators
 from flask_graphql import GraphQLView
 import graphene
 from flask_cors import CORS
 import json
+import numpy
 
 app = Flask(__name__)
 CORS(app)
@@ -43,9 +44,16 @@ class Symbol(graphene.ObjectType):
     name = graphene.String()
     decimal = graphene.Float()
 
+
+class Indicator(graphene.ObjectType):
+    # name = graphene.String()
+    output = graphene.List(graphene.String)
+
 class Query(graphene.ObjectType):
     symbolsList = graphene.List(Symbol)
     getHist300 = graphene.List(Hist300, symbol=graphene.String())
+    sma = graphene.Field(Indicator, input=graphene.List(graphene.Float))
+
 
     def resolve_symbolsList(self, info):
         r = get_data.fcsapi()
@@ -55,6 +63,9 @@ class Query(graphene.ObjectType):
         r = get_data.hist_300(symbol)
         return r['response']
 
+    def resolve_sma(self, info, input):
+        r= indicators.SMA(input)
+        return Indicator(output=r)
 
 schema = graphene.Schema(query=Query)
 

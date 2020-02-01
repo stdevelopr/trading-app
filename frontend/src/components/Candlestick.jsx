@@ -1,14 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
-import { FCSAPI_FOREX_HIST_300_OHLC } from "../graphql/queries/get_data.graphql";
+import {
+  FCSAPI_FOREX_HIST_300_OHLC,
+  GET_PAIR
+} from "../graphql/queries/get_data.graphql";
 import * as d3 from "d3";
-
-const GET_PAIR = gql`
-  {
-    FCSAPI_FOREX_PAIR @client
-  }
-`;
 
 const Candlestick = () => {
   const {

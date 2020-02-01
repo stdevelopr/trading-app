@@ -28,14 +28,14 @@ const Chart = () => {
     data: { FCSAPI_FOREX_PAIR }
   } = useQuery(GET_PAIR);
 
-  // query to get the data to plot
+  // query the cache to get the data to plot
   const { loading, error, data } = useQuery(FCSAPI_FOREX_HIST_300_CLOSE, {
     variables: { symbol: FCSAPI_FOREX_PAIR }
   });
 
   if (data) {
     let chart_data = data.getHist300;
-    var svg = d3.select("svg#chart_close");
+    const svg = d3.select("svg#chart_close");
 
     //clear the last plot
     d3.selectAll("svg#chart_close > *").remove();
@@ -43,8 +43,8 @@ const Chart = () => {
     //chart plot area
     const padding = { top: 20, right: 20, bottom: 20, left: 40 };
     const chartArea = {
-      width: parseInt(svg.style("width")) - padding.left - padding.right,
-      height: parseInt(svg.style("height")) - padding.top - padding.bottom
+      width: +svg.attr("width") - padding.left - padding.right,
+      height: +svg.attr("height") - padding.top - padding.bottom
     };
 
     //scale functions
@@ -61,11 +61,14 @@ const Chart = () => {
     // axis
     const xAxis = svg
       .append("g")
+      .attr("id", "xaxis")
       .attr(
         "transform",
         `translate(${padding.left}, ${chartArea.height + padding.top})`
       )
       .call(d3.axisBottom(xScale));
+
+    console.log("ooooooooooo", xAxis);
 
     const yAxis = svg
       .append("g")
