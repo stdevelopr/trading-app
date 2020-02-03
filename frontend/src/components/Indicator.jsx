@@ -2,18 +2,26 @@ import React, { useEffect, useRef } from "react";
 import { gql } from "apollo-boost";
 import { useQuery, useLazyQuery } from "@apollo/react-hooks";
 import { SMA } from "../graphql/queries/get_data.graphql";
+import { withApollo } from "@apollo/react-hoc";
+
 import {
   FCSAPI_FOREX_HIST_300_JUSTCLOSE,
-  GET_PAIR
+  GET_PAIR,
+  GET_INDICATOR,
+  INDICATOR
 } from "../graphql/queries/get_data.graphql";
 
 import * as d3 from "d3";
 
-const Indicator = () => {
+const Indicator = ({ client }) => {
   // get the actual pair
   const {
     data: { FCSAPI_FOREX_PAIR }
   } = useQuery(GET_PAIR);
+
+  const indicator = useQuery(GET_INDICATOR);
+
+  console.log("indiiii", indicator);
 
   // get the values (close and date) from the pair
   const { data } = useQuery(FCSAPI_FOREX_HIST_300_JUSTCLOSE, {
@@ -21,17 +29,25 @@ const Indicator = () => {
   });
 
   // pass the close values as array and get a new array with the indicator values
-  const obj = useQuery(SMA, {
+  const obj = useQuery(INDICATOR, {
     skip: !data,
     variables: {
+      indicator: indicator.data.INDICATOR,
       input: data ? data.getHist300.map(dict => dict.c) : []
     }
   });
 
-  if (obj.data) {
-    const dataset = [data.getHist300, obj.data.sma.output];
+  const updateIndicator = indicator => {
+    console.log("oiiiiiiiiiiii");
+    client.writeData({
+      data: { INDICATOR: indicator }
+    });
+  };
 
-    const svg = d3.select("svg#chart_close");
+  if (obj.data) {
+    const dataset = [data.getHist300, obj.data.indicator.output];
+
+    const svg = d3.select("svg#chart_plot");
 
     //chart plot area
     const padding = { top: 20, right: 20, bottom: 20, left: 40 };
@@ -72,9 +88,17 @@ const Indicator = () => {
   }
   return (
     <div>
-      <svg id="indicator" width="1400" height="500"></svg>
+      {/* <svg id="indicator" width="1400" height="500"></svg> */}
+      <select
+        onChange={e => {
+          updateIndicator(e.target.value);
+        }}
+      >
+        <option>Select an indicator</option>
+        <option>SMA</option>
+      </select>
     </div>
   );
 };
 
-export default Indicator;
+export default withApollo(Indicator);

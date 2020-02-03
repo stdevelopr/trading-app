@@ -32,9 +32,9 @@ export const FCSAPI_FOREX_HIST_300_JUSTCLOSE = gql`
   }
 `;
 
-export const SMA = gql`
-  query SMA($input: [Float]) {
-    sma(input: $input) {
+export const INDICATOR = gql`
+  query indic($indicator:String, $input: [Float]) {
+    indicator(indicator:$indicator, input: $input) {
       output
     }
   }
@@ -52,5 +52,20 @@ export const SYMBOLS_LIST = gql`
 export const GET_PAIR = gql`
   {
     FCSAPI_FOREX_PAIR @client
+  }
+`;
+
+
+export const GET_INDICATOR = gql`
+  {
+    INDICATOR @client
+  }
+`;
+
+export const GET_CHART_STATE = gql`
+  {
+    FCSAPI_FOREX_PAIR @client
+    CHART_TYPE @client
+    INDICATOR @client
   }
 `;

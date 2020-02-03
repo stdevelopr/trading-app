@@ -52,7 +52,7 @@ class Indicator(graphene.ObjectType):
 class Query(graphene.ObjectType):
     symbolsList = graphene.List(Symbol)
     getHist300 = graphene.List(Hist300, symbol=graphene.String())
-    sma = graphene.Field(Indicator, input=graphene.List(graphene.Float))
+    indicator = graphene.Field(Indicator, indicator= graphene.String(),input=graphene.List(graphene.Float))
 
 
     def resolve_symbolsList(self, info):
@@ -63,9 +63,12 @@ class Query(graphene.ObjectType):
         r = get_data.hist_300(symbol)
         return r['response']
 
-    def resolve_sma(self, info, input):
-        r= indicators.SMA(input)
-        return Indicator(output=r)
+    def resolve_indicator(self, info, indicator,input):
+        if indicator == "SMA": 
+            r= indicators.SMA(input)
+            return Indicator(output=r)
+        else:
+            return Indicator(output=[])
 
 schema = graphene.Schema(query=Query)
 
