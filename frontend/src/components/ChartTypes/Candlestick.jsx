@@ -7,8 +7,6 @@ import {
 import * as d3 from "d3";
 
 const Candlestick = chart_data => {
-  console.log("hereeeee");
-
   // let chart_data = data;
   var svg = d3.select("svg#chart_plot");
 

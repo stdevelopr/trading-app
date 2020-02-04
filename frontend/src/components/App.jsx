@@ -4,6 +4,7 @@ import { ApolloProvider } from "@apollo/react-hooks";
 import Navbar from "./Navbar.jsx";
 // import Chart from "./ChartTypes/Close.jsx";
 import ChartPlot from "./ChartPlot.jsx";
+import IndicatorsPlot from "./IndicatorsPlot.jsx";
 // import CandlestickChart from "./ChartTypes/Candlestick.jsx";
 // import Indicator from "./Indicator.jsx";
 import { InMemoryCache } from "apollo-cache-inmemory";
@@ -19,7 +20,7 @@ cache.writeData({
   data: {
     FCSAPI_FOREX_PAIR: "EUR/USD",
     CHART_TYPE: "Candlestick",
-    INDICATOR: ""
+    INDICATORS: []
   }
 });
 
@@ -28,10 +29,8 @@ const App = () => {
     <ApolloProvider client={Client}>
       <div>
         <Navbar />
-        {/* <Indicator /> */}
         <ChartPlot />
-        {/* <Chart /> */}
-        {/* <Candlestick /> */}
+        <IndicatorsPlot />
       </div>
     </ApolloProvider>
   );

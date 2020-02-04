@@ -52,7 +52,8 @@ class Indicator(graphene.ObjectType):
 class Query(graphene.ObjectType):
     symbolsList = graphene.List(Symbol)
     getHist300 = graphene.List(Hist300, symbol=graphene.String())
-    indicator = graphene.Field(Indicator, indicator= graphene.String(),input=graphene.List(graphene.Float))
+    indicator = graphene.Field(Indicator, indicatorsList= graphene.List(graphene.String),input=graphene.List(graphene.Float))
+    crossPlot = graphene.List(graphene.String)
 
 
     def resolve_symbolsList(self, info):
@@ -63,12 +64,18 @@ class Query(graphene.ObjectType):
         r = get_data.hist_300(symbol)
         return r['response']
 
-    def resolve_indicator(self, info, indicator,input):
-        if indicator == "SMA": 
-            r= indicators.SMA(input)
+    def resolve_indicator(self, info, indicatorsList,input):
+        if indicatorsList != []:
+            indicatorCall = getattr(indicators, indicatorsList[0])
+            r= indicatorCall(input)
             return Indicator(output=r)
         else:
             return Indicator(output=[])
+
+        
+    def resolve_crossPlot(self, info, indicator1, indicator2, input):
+        pass
+
 
 schema = graphene.Schema(query=Query)
 
