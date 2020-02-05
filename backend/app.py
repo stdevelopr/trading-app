@@ -47,7 +47,7 @@ class Symbol(graphene.ObjectType):
 
 class Indicator(graphene.ObjectType):
     # name = graphene.String()
-    output = graphene.List(graphene.String)
+    output = graphene.List(graphene.List(graphene.String))
 
 class Query(graphene.ObjectType):
     symbolsList = graphene.List(Symbol)
@@ -65,10 +65,14 @@ class Query(graphene.ObjectType):
         return r['response']
 
     def resolve_indicator(self, info, indicatorsList,input):
+        output= []
         if indicatorsList != []:
-            indicatorCall = getattr(indicators, indicatorsList[0])
-            r= indicatorCall(input)
-            return Indicator(output=r)
+            for index, indicator in enumerate(indicatorsList):
+                print('IIIIIIIIIIII',indicator)
+                indicatorCall = getattr(indicators, indicator)
+                r= indicatorCall(input)
+                output.append(r)
+            return Indicator(output=output)
         else:
             return Indicator(output=[])
 
