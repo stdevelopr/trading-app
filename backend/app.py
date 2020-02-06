@@ -68,7 +68,6 @@ class Query(graphene.ObjectType):
         output= []
         if indicatorsList != []:
             for index, indicator in enumerate(indicatorsList):
-                print('IIIIIIIIIIII',indicator)
                 indicatorCall = getattr(indicators, indicator)
                 r= indicatorCall(input)
                 output.append(r)

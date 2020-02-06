@@ -7,7 +7,7 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import CrossPlot from "./Indicatorsd3/CrossPlot";
-import { useLazyQuery } from "@apollo/react-hooks";
+import { useLazyQuery, useQuery } from "@apollo/react-hooks";
 import { withApollo } from "@apollo/react-hoc";
 
 import {
@@ -26,24 +26,25 @@ const useStyles = makeStyles(theme => ({
 const CrossPlotIndicators = ({ client }) => {
   const [indicator1, setIndicator1] = useState("");
   const [indicator2, setIndicator2] = useState("");
-  const [loadGreeting, { called, loading, data }] = useLazyQuery(CHART_VALUES);
+  const { loading, error, data } = useQuery(CHART_VALUES);
+  let indicators = [indicator1, indicator2];
+  const [calc_indicator, indicator_values] = useLazyQuery(CALC_INDICATORS, {
+    variables: {
+      indicatorsList: indicators,
+      input: data ? data.getHist300.map(dict => dict.c) : []
+    }
+  });
 
-  console.log(loading);
-  useEffect(() => {
-    console.log("lllll", data);
-  }, [data]);
+  const calcIndicators = () => {
+    if (indicator1 != "" && indicator2 != "") {
+      calc_indicator();
+    }
+  };
 
-  if (indicator1 != "" && indicator2 != "" && loading) {
-    let indicators = [indicator1, indicator2];
-    // const ind = useQuery(CALC_INDICATORS, {
-    //   variables: {
-    //     indicatorsList: indicators,
-    //     input: data ? data.getHist300.map(dict => dict.c) : []
-    //   }
-    // });
+  if (indicator1 != "" && indicator2 != "" && indicator_values.data) {
+    CrossPlot(data, indicator_values);
   }
 
-  CrossPlot(indicator1, indicator2);
   const classes = useStyles();
   return (
     <div>
@@ -57,7 +58,7 @@ const CrossPlotIndicators = ({ client }) => {
         >
           <option value="" />
           <option value={"SMA"}>SMA</option>
-          <option value={"RSI"}>RSI</option>
+          <option value={"EMA"}>EMA</option>
         </Select>
       </FormControl>
       <FormControl className={classes.formControl}>
@@ -70,11 +71,11 @@ const CrossPlotIndicators = ({ client }) => {
         >
           <option value="" />
           <option value={"SMA"}>SMA</option>
-          <option value={"RSI"}>RSI</option>
+          <option value={"EMA"}>EMA</option>
         </Select>
       </FormControl>
       <div>
-        <Button onClick={loadGreeting}>PLOT</Button>
+        <Button onClick={calcIndicators}>PLOT</Button>
       </div>
     </div>
   );

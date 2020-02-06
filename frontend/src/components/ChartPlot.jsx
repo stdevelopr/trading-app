@@ -32,6 +32,7 @@ const ChartPlot = ({ client }) => {
   return (
     <div>
       <svg id="chart_plot" width="1400" height="400"></svg>
+      <svg id="cross_plot" width="500" height="500"></svg>
     </div>
   );
 };
