@@ -6,8 +6,8 @@ import numpy as np
 
 def BBANDS(close, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
     "BBANDS - Bollinger Bands"
-    upperband, middleband, lowerband = BBANDS(close, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0)
-    pass
+    upperband, middleband, lowerband = talib.BBANDS(np.asarray(close), timeperiod=5, nbdevup=2, nbdevdn=2, matype=0)
+    return [upperband, middleband, lowerband]
 
 def DEMA(close, timeperiod=30):
     "DEMA - Double Exponential Moving Average"
@@ -19,9 +19,9 @@ def EMA(close, timeperiod=30):
     EMA - Exponential Moving Average. NOTE: The EMA function has an unstable period.
     """
     real = talib.EMA(np.asarray(close), timeperiod=30)
-    return real
+    return [real]
 
 def SMA(close):
     "SMA - Simple Moving Average"
     real = talib.SMA(np.asarray(close), timeperiod=30)
-    return real
+    return [real]

@@ -25,7 +25,7 @@ const IndicatorsList = ({ client }) => {
   };
   return (
     <List>
-      {["SMA", "EMA"].map(value => {
+      {["BBANDS", "SMA", "EMA"].map(value => {
         const labelId = `checkbox-list-label-${value}`;
 
         return (

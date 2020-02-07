@@ -2,45 +2,50 @@ import React from "react";
 // import { withApollo } from "@apollo/react-hoc";
 import { useQuery } from "@apollo/react-hooks";
 // import Indicator from "./Indicator.jsx";
-import SMA from "./Indicatorsd3/SMA";
+import SimpleLine from "./Indicatorsd3/SimpleLine";
+import MultipleLines from "./Indicatorsd3/MultipleLines";
 
 // import { GET_CHART_STATE } from "../graphql/queries/get_data.graphql";
 import Candlestick from "./ChartTypes/Candlestick.jsx";
 import Close from "./ChartTypes/Close.jsx";
 import {
+  CHART_VALUES,
   GET_PAIR,
   FCSAPI_FOREX_HIST_300_OHLC_CACHE,
   CALC_INDICATORS,
   GET_INDICATORS
 } from "../graphql/queries/get_data.graphql";
 
+const SimpleLineIndicators = ["EMA", "SMA"];
+const MultipleLineIndicators = ["BBANDS"];
+
 const IndicatorsPlot = () => {
-  // GET THE CHART DATA
-  // get the values of the actual symbol
-  const {
-    data: { FCSAPI_FOREX_PAIR }
-  } = useQuery(GET_PAIR);
+  //get the chart values from cache
+  const { data: chart_values } = useQuery(CHART_VALUES);
 
-  // query to get the data from cache to plot
-  const { data } = useQuery(FCSAPI_FOREX_HIST_300_OHLC_CACHE, {
-    variables: { symbol: FCSAPI_FOREX_PAIR }
-  });
-
+  // get the active indicators
   const {
     data: { INDICATORS }
   } = useQuery(GET_INDICATORS);
 
+  // calculate the indicators
   const ind = useQuery(CALC_INDICATORS, {
-    skip: !data,
+    skip: !chart_values,
     variables: {
       indicatorsList: INDICATORS,
-      input: data ? data.getHist300.map(dict => dict.c) : []
+      input: chart_values ? chart_values.getHist300.map(dict => dict.c) : []
     }
   });
 
-  if (data && ind.data) {
-    ind.data.indicator.output.map(i => {
-      SMA(data.getHist300, i);
+  // call the functions to plot the array of indicators
+  if (chart_values && ind.data) {
+    ind.data.indicator.map(i => {
+      // verify what kind of indicator to plot
+      if (SimpleLineIndicators.indexOf(i.name) >= 0)
+        SimpleLine(chart_values.getHist300, i.output);
+      else if (MultipleLineIndicators.indexOf(i.name) >= 0) {
+        MultipleLines(chart_values.getHist300, i.output);
+      }
     });
   }
   return "OK";

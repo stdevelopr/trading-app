@@ -46,13 +46,13 @@ class Symbol(graphene.ObjectType):
 
 
 class Indicator(graphene.ObjectType):
-    # name = graphene.String()
+    name = graphene.String()
     output = graphene.List(graphene.List(graphene.String))
 
 class Query(graphene.ObjectType):
     symbolsList = graphene.List(Symbol)
     getHist300 = graphene.List(Hist300, symbol=graphene.String())
-    indicator = graphene.Field(Indicator, indicatorsList= graphene.List(graphene.String),input=graphene.List(graphene.Float))
+    indicator = graphene.List(Indicator, indicatorsList= graphene.List(graphene.String), input=graphene.List(graphene.Float))
     crossPlot = graphene.List(graphene.String)
 
 
@@ -65,15 +65,15 @@ class Query(graphene.ObjectType):
         return r['response']
 
     def resolve_indicator(self, info, indicatorsList,input):
-        output= []
+        output_list = []
         if indicatorsList != []:
             for index, indicator in enumerate(indicatorsList):
                 indicatorCall = getattr(indicators, indicator)
                 r= indicatorCall(input)
-                output.append(r)
-            return Indicator(output=output)
+                output_list.append(Indicator(name=indicator, output=r))
+            return output_list
         else:
-            return Indicator(output=[])
+            return [Indicator(name="", output=[])]
 
         
     def resolve_crossPlot(self, info, indicator1, indicator2, input):
