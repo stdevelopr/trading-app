@@ -48,10 +48,11 @@ const CrossPlotIndicators = ({ client }) => {
 
 
   const toggleModal = () => {
-    console.log('mmmmm', openModal)
-    setOpenModal(!openModal)
     calcIndicators()
+    // if (indicator_values.data)
+    setOpenModal(!openModal)
   }
+
 
   const calcIndicators = () => {
     // setOpenModal(!openModal)
@@ -100,7 +101,7 @@ const CrossPlotIndicators = ({ client }) => {
         </Select>
       </FormControl>
       <div>
-        <Modal open={openModal} handleClose={() => setOpenModal(false)}>
+        <Modal open={openModal && indicator_values.data} handleClose={() => setOpenModal(false)}>
           <svg style={{ border: 'solid 2px black' }} id="cross_plot" width="500" height="500"></svg>
         </Modal>
 

@@ -9,9 +9,6 @@ import { useQuery } from "@apollo/react-hooks";
 import { GET_CHART_STATE } from "../graphql/queries/get_data.graphql";
 
 const Navbar = ({ client }) => {
-  const {
-    data: { FCSAPI_FOREX_PAIR, CHART_TYPE, INDICATORS }
-  } = useQuery(GET_CHART_STATE);
 
   return (
     <div style={{ backgroundColor: "gray", display: "flex" }}>

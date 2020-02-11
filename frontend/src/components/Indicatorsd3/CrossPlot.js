@@ -4,7 +4,6 @@ const CrossPlot = (data, indicator_values) => {
   let ind1 = indicator_values.data.indicator[0].output[0];
   let ind2 = indicator_values.data.indicator[1].output[0];
   const exists = document.getElementById("cross_plot");
-  console.log('svggg', exists)
   if (!exists) return null;
   const svg = d3.select("svg#cross_plot");
 

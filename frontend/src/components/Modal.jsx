@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useEffect, useRef } from "react"
 import Draggable from "react-draggable";
-import { getThemeProps } from "@material-ui/styles";
 
 const modal = {
     position: 'absolute',
@@ -12,31 +11,27 @@ const modal = {
 }
 
 const Modal = ({ children, open, handleClose }) => {
+    const [pinModal, setpinModal] = React.useState(false)
 
     useEffect(() => {
-        if (open)
-            document.addEventListener("click", handleClick)
+        if (open && !pinModal) document.addEventListener("click", handleClick)
 
-    }, [open])
+        return () => document.removeEventListener("click", handleClick)
+
+    }, [open, pinModal])
 
     const handleClick = (e) => {
-        if (node.current.contains(e.target)) {
-            return;
-        }
-        else {
-            handleClose()
-            document.removeEventListener("click", handleClick);
+        if (node.current.contains(e.target)) return;
+        else handleClose()
 
-        }
     }
-
 
     const node = useRef();
     return (
         <div ref={node}>
             <Draggable>
-                <div style={modal}
-                >
+                <div style={modal}>
+                    {open && <button onClick={() => setpinModal(!pinModal)}>Pin</button>}
                     {open && children}
                 </div>
             </Draggable >
