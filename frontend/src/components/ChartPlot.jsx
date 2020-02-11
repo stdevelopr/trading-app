@@ -6,6 +6,7 @@ import { GET_CHART_STATE } from "../graphql/queries/get_data.graphql";
 import Candlestick from "./ChartTypes/Candlestick.jsx";
 import Close from "./ChartTypes/Close.jsx";
 import { FCSAPI_FOREX_HIST_300_OHLC } from "../graphql/queries/get_data.graphql";
+import Modal from "./Modal.jsx";
 
 const ChartPlot = ({ client }) => {
   const {
@@ -28,11 +29,10 @@ const ChartPlot = ({ client }) => {
         break;
     }
   }
-
   return (
     <div>
       <svg id="chart_plot" width="1400" height="400"></svg>
-      <svg id="cross_plot" width="500" height="500"></svg>
+      {/* <svg id="cross_plot" width="500" height="500"></svg> */}
     </div>
   );
 };

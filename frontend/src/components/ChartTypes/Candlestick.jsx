@@ -8,7 +8,7 @@ import * as d3 from "d3";
 
 const Candlestick = chart_data => {
   // let chart_data = data;
-  var svg = d3.select("svg#chart_plot");
+  const svg = d3.select("svg#chart_plot");
 
   //clear the last plot
   d3.selectAll("svg#chart_plot > *").remove();
@@ -69,13 +69,60 @@ const Candlestick = chart_data => {
       if (yoValue(d) > ycValue(d)) return "red";
       else return "green";
     })
-    .attr("width", 2);
+    .attr("width", 2)
+    .on("mouseover", handleMouseOver)
+    .on("mouseout", handleMouseOut);
 
-  // return (
-  //   <div>
-  //     <svg id="svg_ohlc" width="1400" height="400"></svg>
-  //   </div>
-  // );
+
+  ;
+
+  // Create Event Handlers for mouse
+  function handleMouseOver(d, i) {  // Add interactivity
+    console.log(d, i)
+    // Use D3 to select element, change color and size
+
+    // Specify where to put label of text
+    svg
+      .append("g")
+      .append("text")
+      .attr("transform", `translate(${padding.left}, ${padding.top})`)
+      .attr(
+        'id', "t" + d.t)
+      .attr(
+        'x', xScale(xValue(d)))
+      .attr(
+        'y', yScale(ycValue(d)))
+
+      .text(function () {
+        return d.c;  // Value of the text
+      })
+
+    svg
+      .append("g")
+      .attr("transform", `translate(${padding.left}, ${padding.top})`)
+      .append("line")
+      .attr(
+        'id', "l" + d.t)
+      .attr("x1", xScale(xValue(d)))
+      .attr("y1", chartArea.height)
+      .attr("x2", xScale(xValue(d)))
+      .attr("y2", 0)
+      .attr("stroke", 'black')
+      .attr('stroke-width', 2);
+  }
+
+  function handleMouseOut(d, i) {
+    // Use D3 to select element, change color back to normal
+    d3.select(this).attr({
+      fill: "black",
+    });
+
+    // Select text by id and then remove
+    d3.select("#t" + d.t).remove();  // Remove text location
+    d3.select("#l" + d.t).remove();
+  }
 };
+
+
 
 export default Candlestick;
