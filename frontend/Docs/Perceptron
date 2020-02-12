@@ -1,0 +1,11 @@
+A perceptron is a node, a representation of a neuron that is part of a neural network.
+In the perceptron model we have several inputs and one output. 
+In each input we have an input number, 
+so we can also think the collection of inputs numbers as a vector [i1,i2, i3...].
+We also have associated with each input an associated weight.
+Higher weight values means that the numerical input will be propagated more strongly.
+Weight values close to zero means that the input number is less significant.
+We can also have negative weight, wich flips the magnitude of the input.
+What happens to the neuron is that we will sum up all the incoming values, 
+that are the product of the input numbers and the their corresponding weights.
+and from these bunch of numbers we get a number as output.

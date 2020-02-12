@@ -11,7 +11,7 @@ def BBANDS(close, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
 
 def DEMA(close, timeperiod=30):
     "DEMA - Double Exponential Moving Average"
-    real = talib.DEMA(close, timeperiod=30)
+    real = talib.DEMA(np.asarray(close), timeperiod=30)
     return [real]
 
 def EMA(close, timeperiod=30):
@@ -23,23 +23,23 @@ def EMA(close, timeperiod=30):
 
 def HT_TRENDLINE(close):
     "HT_TRENDLINE - Hilbert Transform - Instantaneous Trendline"
-    real = talib.HT_TRENDLINE(close)
+    real = talib.HT_TRENDLINE(np.asarray(close))
     return [real]
 
 def KAMA(close):
     "KAMA - Kaufman Adaptive Moving Average"
-    real = talib.KAMA(close, timeperiod=30)
+    real = talib.KAMA(np.asarray(close), timeperiod=30)
     return [real]
 
 def MA(close):
     "MA - Moving average"
-    real = talib.MA(close, timeperiod=30, matype=0)
+    real = talib.MA(np.asarray(close), timeperiod=30, matype=0)
     return [real]
 
 
 def MAMA(close):
     "MAMA - MESA Adaptive Moving Average"
-    mama, fama = talib.MAMA(close, fastlimit=0, slowlimit=0)
+    mama, fama = talib.MAMA(np.asarray(close), fastlimit=0, slowlimit=0)
     return [mama, fama]
 
 def MAVP(close, periods):

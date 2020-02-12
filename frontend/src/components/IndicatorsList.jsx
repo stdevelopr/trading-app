@@ -16,6 +16,7 @@ const IndicatorsList = ({ client }) => {
   const [openModal, setOpenModal] = React.useState(false)
   const [checked, setChecked] = React.useState([]);
 
+  const indicatorsList = ["BBANDS", "DEMA", "EMA", "HT_TRENDLINE", "KAMA", "MA", "MAMA"]
   const toggleModal = () => {
     setOpenModal(!openModal)
   }
@@ -39,9 +40,9 @@ const IndicatorsList = ({ client }) => {
     <div>
       <button onClick={toggleModal}>Indicadores</button>
       <Modal open={openModal} handleClose={() => setOpenModal(false)}>
-        <div style={{ backgroundColor: 'white', padding: '20px' }}>
+        <div style={{ backgroundColor: 'white', padding: '50px', border: 'solid 2px black' }}>
           <List style={{ width: '300px' }}>
-            {["BBANDS", "SMA", "EMA"].map(value => {
+            {indicatorsList.map(value => {
               const labelId = `checkbox-list-label-${value}`;
 
               return (

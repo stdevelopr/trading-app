@@ -5,6 +5,7 @@ import Navbar from "./Navbar.jsx";
 // import Chart from "./ChartTypes/Close.jsx";
 import ChartPlot from "./ChartPlot.jsx";
 import IndicatorsPlot from "./IndicatorsPlot.jsx";
+import {Perceptron} from "./Perceptron.jsx";
 // import CandlestickChart from "./ChartTypes/Candlestick.jsx";
 // import Indicator from "./Indicator.jsx";
 import { InMemoryCache } from "apollo-cache-inmemory";
@@ -31,6 +32,7 @@ const App = () => {
         <Navbar />
         <ChartPlot />
         <IndicatorsPlot />
+        <Perceptron />
       </div>
     </ApolloProvider>
   );

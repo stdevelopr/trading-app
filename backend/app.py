@@ -4,7 +4,7 @@ from flask_graphql import GraphQLView
 import graphene
 from flask_cors import CORS
 import json
-import numpy
+import numpy as np
 
 app = Flask(__name__)
 CORS(app)

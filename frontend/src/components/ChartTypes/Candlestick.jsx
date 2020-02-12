@@ -20,6 +20,10 @@ const Candlestick = chart_data => {
     height: parseInt(svg.style("height")) - padding.top - padding.bottom
   };
 
+  const minX = d3.min(chart_data, v => v.t);
+  const minY = d3.min(chart_data, v => v.c)
+  const maxX = d3.max(chart_data, v => v.t)
+  const maxY = d3.max(chart_data, v => v.c)
   //scale functions
   const yScale = d3
     .scaleLinear()
@@ -70,59 +74,125 @@ const Candlestick = chart_data => {
       else return "green";
     })
     .attr("width", 2)
-    .on("mouseover", handleMouseOver)
-    .on("mouseout", handleMouseOut);
+    // .on("mouseover", handleMouseOver)
+    // .on("mouseout", handleMouseOut);
 
 
-  ;
+    ;
 
-  // Create Event Handlers for mouse
-  function handleMouseOver(d, i) {  // Add interactivity
-    console.log(d, i)
-    // Use D3 to select element, change color and size
+  // // Create Event Handlers for mouse
+  // function handleMouseOver(d, i) {  // Add interactivity
+  //   console.log(d, i)
+  //   // Use D3 to select element, change color and size
 
-    // Specify where to put label of text
-    svg
-      .append("g")
-      .append("text")
-      .attr("transform", `translate(${padding.left}, ${padding.top})`)
-      .attr(
-        'id', "t" + d.t)
-      .attr(
-        'x', xScale(xValue(d)))
-      .attr(
-        'y', yScale(ycValue(d)))
+  //   // Specify where to put label of text
+  //   svg
+  //     .append("g")
+  //     .append("text")
+  //     .attr("transform", `translate(${padding.left}, ${padding.top})`)
+  //     .attr(
+  //       'id', "t" + d.t)
+  //     .attr(
+  //       'x', xScale(xValue(d)))
+  //     .attr(
+  //       'y', yScale(ycValue(d)))
 
-      .text(function () {
-        return d.c;  // Value of the text
-      })
+  //     .text(function () {
+  //       return d.c;  // Value of the text
+  //     })
 
-    svg
-      .append("g")
-      .attr("transform", `translate(${padding.left}, ${padding.top})`)
-      .append("line")
-      .attr(
-        'id', "l" + d.t)
-      .attr("x1", xScale(xValue(d)))
-      .attr("y1", chartArea.height)
-      .attr("x2", xScale(xValue(d)))
-      .attr("y2", 0)
-      .attr("stroke", 'black')
-      .attr('stroke-width', 2);
-  }
+  //   svg
+  //     .append("g")
+  //     .attr("transform", `translate(${padding.left}, ${padding.top})`)
+  //     .append("line")
+  //     .attr(
+  //       'id', "l" + d.t)
+  //     .attr("x1", xScale(xValue(d)))
+  //     .attr("y1", chartArea.height)
+  //     .attr("x2", xScale(xValue(d)))
+  //     .attr("y2", 0)
+  //     .attr("stroke", 'black')
+  //     .attr('stroke-width', 2);
+  // }
 
-  function handleMouseOut(d, i) {
-    // Use D3 to select element, change color back to normal
-    d3.select(this).attr({
-      fill: "black",
-    });
+  // function handleMouseOut(d, i) {
+  //   // Use D3 to select element, change color back to normal
+  //   d3.select(this).attr({
+  //     fill: "black",
+  //   });
 
-    // Select text by id and then remove
-    d3.select("#t" + d.t).remove();  // Remove text location
-    d3.select("#l" + d.t).remove();
-  }
-};
+  //   // Select text by id and then remove
+  //   d3.select("#t" + d.t).remove();  // Remove text location
+  //   d3.select("#l" + d.t).remove();
+  // }
 
+
+
+  var crossHair = svg.append("g").attr("class", "crosshair");
+  crossHair.append("line").attr("id", "h_crosshair") // horizontal cross hair
+    .attr("x1", 0)
+    .attr("y1", 0)
+    .attr("x2", 0)
+    .attr("y2", 0)
+    .style("stroke", "gray")
+    .style("stroke-width", "1px")
+    .style("stroke-dasharray", "5,5")
+    .style("display", "none");
+
+  crossHair.append("line").attr("id", "v_crosshair") // vertical cross hair
+    .attr("x1", 0)
+    .attr("y1", 0)
+    .attr("x2", 0)
+    .attr("y2", 0)
+    .style("stroke", "gray")
+    .style("stroke-width", "1px")
+    .style("stroke-dasharray", "5,5")
+    .style("display", "none");
+
+  crossHair.append("text").attr("id", "crosshair_text") // text label for cross hair
+    .style("font-size", "10px")
+    .style("stroke", "gray")
+    .style("stroke-width", "0.5px");
+
+  svg.on("mousemove", function () {
+    var xCoord = d3.mouse(this)[0],
+      yCoord = d3.mouse(this)[1];
+    addCrossHair(xCoord, yCoord);
+  })
+    .on("mouseover", function () {
+      d3.selectAll(".crosshair").style("display", "block");
+    })
+    .on("mouseout", function () {
+      d3.selectAll(".crosshair").style("display", "none");
+    })
+    .append("rect")
+    .style('visibility', 'hidden')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', chartArea.width - padding.left)
+    .attr('height', chartArea.height - padding.left);
+
+  function addCrossHair(xCoord, yCoord) {
+    // Update horizontal cross hair
+    d3.select("#h_crosshair")
+      .attr("x1", xScale(minX))
+      .attr("y1", yCoord)
+      .attr("x2", xScale(maxX))
+      .attr("y2", yCoord)
+      .style("display", "block");
+    // Update vertical cross hair
+    d3.select("#v_crosshair")
+      .attr("x1", xCoord)
+      .attr("y1", yScale(minY))
+      .attr("x2", xCoord)
+      .attr("y2", yScale(maxY))
+      .style("display", "block");
+    // Update text label
+    d3.select("#crosshair_text")
+      .attr("transform", "translate(" + (xCoord + 5) + "," + (yCoord - 5) + ")")
+      .text("(" + xScale.invert(xCoord) + " , " + yScale.invert(yCoord) + ")");
+  };
+}
 
 
 export default Candlestick;

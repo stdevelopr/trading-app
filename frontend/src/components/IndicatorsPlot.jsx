@@ -16,8 +16,6 @@ import {
   GET_INDICATORS
 } from "../graphql/queries/get_data.graphql";
 
-const SimpleLineIndicators = ["EMA", "SMA"];
-const MultipleLineIndicators = ["BBANDS"];
 
 const IndicatorsPlot = () => {
   //get the chart values from cache
@@ -39,11 +37,12 @@ const IndicatorsPlot = () => {
 
   // call the functions to plot the array of indicators
   if (chart_values && ind.data) {
+    console.log(ind.data)
     ind.data.indicator.map(i => {
       // verify what kind of indicator to plot
-      if (SimpleLineIndicators.indexOf(i.name) >= 0)
+      if (i.output.lenght == 1)
         SimpleLine(chart_values.getHist300, i.output);
-      else if (MultipleLineIndicators.indexOf(i.name) >= 0) {
+      else {
         MultipleLines(chart_values.getHist300, i.output);
       }
     });
